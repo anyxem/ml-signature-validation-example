@@ -35,9 +35,11 @@ app.get('/', (req, res) => {
 app.post('/api/verify', (req, res) => {
   const { address, challengeBase64, signature } = req.body;
 
-  const parsedsignature = decodeURIComponent(signature);
-  const signedMessageUint8Array = stringToUint8Array(parsedsignature.split(' ').join('+'))
-  const originalMessage = decodedString(challengeBase64)
+  const parsedsignature = decodeURIComponent(signature).split(' ').join('+');
+  const parsedchallenge = decodeURIComponent(challengeBase64);
+
+  const signedMessageUint8Array = stringToUint8Array(parsedsignature)
+  const originalMessage = decodedString(parsedchallenge)
   const messageBytes = stringToBytes(originalMessage)
 
   try {

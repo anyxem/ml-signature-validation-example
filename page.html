@@ -26,10 +26,11 @@ Date: ${new Date().toISOString()}`;
         const signature = urlParams.get('signature');
         const address = urlParams.get('address');
         const challengeBase64Input = urlParams.get('challengeBase64');
-        if (signature && address) {
+        if (signature && address && challengeBase64Input) {
           // make request to the server to verify the signature POST /verify
           document.getElementById('signature').innerText = `${signature}`;
           document.getElementById('address').innerText = `${address}`;
+          document.getElementById('challenge').innerText = `${atob(challengeBase64Input)}`;
 
           const res = await fetch('/api/verify', {
             method: 'POST',
