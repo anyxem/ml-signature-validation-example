@@ -7,10 +7,9 @@
     <script src="https://cdn.tailwindcss.com"></script>
     <script>
       document.addEventListener("DOMContentLoaded", async function() {
-        const challenge = ''+
-        'Hello,\n'+
-        'Let me sign in\n'+
-        'Date: '+new Date().toISOString();
+        const challenge = `Hello,
+Let me sign in
+Date: ${new Date().toISOString()}`;
         document.getElementById('challenge').innerText = `${challenge}`;
 
         // Encode the challenge
@@ -19,13 +18,14 @@
         const callback = 'https://mini-app-auth-test.vercel.app/';
 
         const link = document.getElementById('link');
-        link.href = `https://mintlayer.org/app/signchallenge?challengeBase64=${challengeBase64}&callback=${callback}`;
+        link.href = `https://wallet-meta.mintlayer.org/app/signchallenge?challengeBase64=${challengeBase64}&callback=${callback}`;
         // link.href = `mojitowallet://signchallenge?challengeBase64=${challengeBase64}&callback=${callback}`;
 
         // if query string contains the signed challenge and address pass them to the page
         const urlParams = new URLSearchParams(window.location.search);
         const signature = urlParams.get('signature');
         const address = urlParams.get('address');
+        const challengeBase64Input = urlParams.get('challengeBase64');
         if (signature && address) {
           // make request to the server to verify the signature POST /verify
           document.getElementById('signature').innerText = `${signature}`;
@@ -37,7 +37,7 @@
             'Content-Type': 'application/json'
             },
             body: JSON.stringify({
-              challengeBase64: challengeBase64,
+              challengeBase64: challengeBase64Input,
               signature: signature,
               address: address
             })
