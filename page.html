@@ -1,0 +1,93 @@
+<!doctype html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <title>Mojito challenge test</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <script>
+      document.addEventListener("DOMContentLoaded", async function() {
+        const challenge = ''+
+        'Hello,\n'+
+        'Let me sign in\n'+
+        'Date: '+new Date().toISOString();
+        document.getElementById('challenge').innerText = `${challenge}`;
+
+        // Encode the challenge
+        const challengeBase64 = btoa(challenge);
+
+        const callback = 'https://mini-app-auth-test.vercel.app/';
+
+        const link = document.getElementById('link');
+        // link.href = `https://mintlayer.org/app/signchallenge?challengeBase64=${challengeBase64}&callback=${callback}`; for https schema
+        link.href = `mojitowallet://signchallenge?challengeBase64=${challengeBase64}&callback=${callback}`;
+
+        // if query string contains the signed challenge and address pass them to the page
+        const urlParams = new URLSearchParams(window.location.search);
+        const signature = urlParams.get('signature');
+        const address = urlParams.get('address');
+        if (signature && address) {
+          // make request to the server to verify the signature POST /verify
+          document.getElementById('signature').innerText = `${signature}`;
+          document.getElementById('address').innerText = `${address}`;
+
+          const res = await fetch('/api/verify', {
+            method: 'POST',
+            headers: {
+            'Content-Type': 'application/json'
+            },
+            body: JSON.stringify({
+              challengeBase64: challengeBase64,
+              signature: signature,
+              address: address
+            })
+          });
+          const data = await res.json();
+          if (data.success) {
+            document.getElementById('result').style.color = 'green';
+            document.getElementById('result').innerText = `Signature valid`;
+          } else {
+            document.getElementById('result').style.color = 'red';
+            document.getElementById('result').innerText = `Signature not valid`;
+          }
+        }
+      });
+    </script>
+</head>
+<body class="bg-gray-100 flex justify-center">
+  <div class="bg-white p-2 rounded m-2 max-w-[400px]">
+    <h1 class="text-3xl mb-4">Mojito challenge test</h1>
+    <p class="mb-5">
+        This page is intended to test the Mojito challenge.
+    </p>
+    <div class="flex justify-between mb-5">
+        <a id="link" href="" class="inline-block rounded p-2 bg-green-500">Open mojito wallet</a>
+
+        <a href="https://mini-app-auth-test.vercel.app/" class="inline-block rounded p-2 bg-amber-500">Reload</a>
+    </div>
+
+    <div>
+        <div class="border p-2">
+        <h2 class="font-bold">Challenge</h2>
+        <pre id="challenge">
+            Hello,
+            Let me sign in
+            Date: ${new Date().toISOString()}
+        </pre>
+        </div>
+        <div class="border p-2">
+        <h4 class="font-bold">Signature:</h4>
+        <div id="signature" class="break-all font-mono" style="white-space: wrap;"></div>
+        </div>
+        <div class="border p-2">
+        <h4 class="font-bold">Address:</h4>
+        <div id="address" class="break-all font-mono"></div>
+        </div>
+        <div class="border p-2">
+        <h4 class="font-bold">Result:</h4>
+        <div id="result" class="break-all font-mono"></div>
+        </div>
+    </div>
+  </div>
+</body>
+</html>
