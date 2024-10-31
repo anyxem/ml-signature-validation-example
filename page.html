@@ -19,8 +19,8 @@
         const callback = 'https://mini-app-auth-test.vercel.app/';
 
         const link = document.getElementById('link');
-        // link.href = `https://mintlayer.org/app/signchallenge?challengeBase64=${challengeBase64}&callback=${callback}`; for https schema
-        link.href = `mojitowallet://signchallenge?challengeBase64=${challengeBase64}&callback=${callback}`;
+        link.href = `https://mintlayer.org/app/signchallenge?challengeBase64=${challengeBase64}&callback=${callback}`;
+        // link.href = `mojitowallet://signchallenge?challengeBase64=${challengeBase64}&callback=${callback}`;
 
         // if query string contains the signed challenge and address pass them to the page
         const urlParams = new URLSearchParams(window.location.search);
